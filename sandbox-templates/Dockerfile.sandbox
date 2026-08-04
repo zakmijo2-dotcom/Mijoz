@@ -1,0 +1,30 @@
+FROM python:3.11-slim
+
+WORKDIR /sandbox
+
+# Install essential tools for coding agents
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    git \
+    curl \
+    wget \
+    build-essential \
+    nodejs \
+    npm \
+    python3-pip \
+    vim \
+    nano \
+    htop \
+    procps \
+    && rm -rf /var/lib/apt/lists/*
+
+# Create sandbox user
+RUN useradd -m -u 1000 sandbox && \
+    mkdir -p /workspace && \
+    chown -R sandbox:sandbox /workspace
+
+USER sandbox
+
+WORKDIR /workspace
+
+# Default command - keeps container running for agent interaction
+CMD ["tail", "-f", "/dev/null"]
