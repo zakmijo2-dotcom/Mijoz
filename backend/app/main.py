@@ -6,7 +6,7 @@ from contextlib import asynccontextmanager
 
 from app.core.config import get_settings
 from app.services.proxy import proxy_service
-from app.routers import auth, providers, projects, sessions, proxy as proxy_router
+from app.routers import auth, providers, projects, sessions, proxy as proxy_router, routers as routers_router
 
 logger = structlog.get_logger()
 settings = get_settings()
@@ -16,11 +16,11 @@ settings = get_settings()
 async def lifespan(app: FastAPI):
     """Application lifespan manager for startup/shutdown events."""
     # Startup
-    logger.info("app_startup", message="Starting Unified AI Agents Platform")
+    logger.info("app_startup", message="Starting Mijoz - AI Engineering Operating System")
     yield
     # Shutdown
     await proxy_service.close()
-    logger.info("app_shutdown", message="Shutting down Unified AI Agents Platform")
+    logger.info("app_shutdown", message="Shutting down Mijoz - AI Engineering Operating System")
 
 
 def create_app() -> FastAPI:
@@ -28,7 +28,7 @@ def create_app() -> FastAPI:
     
     app = FastAPI(
         title=settings.APP_NAME,
-        description="Unified platform for AI coding agents with multi-provider proxy layer",
+        description="Mijoz - Unified platform for AI coding agents with multi-provider proxy layer, Agent Router, and Model Router",
         version="1.0.0",
         lifespan=lifespan,
     )
@@ -48,6 +48,7 @@ def create_app() -> FastAPI:
     app.include_router(projects.router, prefix=f"{settings.API_V1_PREFIX}/projects", tags=["Projects"])
     app.include_router(sessions.router, prefix=f"{settings.API_V1_PREFIX}/sessions", tags=["Sessions"])
     app.include_router(proxy_router.router, prefix=f"{settings.API_V1_PREFIX}/proxy", tags=["Proxy"])
+    app.include_router(routers_router.router)  # Already has prefix
     
     @app.get("/health")
     async def health_check():
@@ -58,6 +59,7 @@ def create_app() -> FastAPI:
         return {
             "name": settings.APP_NAME,
             "version": "1.0.0",
+            "description": "One workspace. Any Agent. Any Model. Any Provider. Any Project.",
             "docs": "/docs",
         }
     
