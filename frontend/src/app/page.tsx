@@ -21,11 +21,11 @@ export default function Home() {
             🚀 Unified AI Agents Platform
           </h1>
           <nav className="flex gap-4">
-            <a href="/dashboard" className="text-sm text-muted-foreground hover:text-foreground">
+            <a href="/" className="text-sm text-muted-foreground hover:text-foreground">
               Dashboard
             </a>
-            <a href="/providers" className="text-sm text-muted-foreground hover:text-foreground">
-              Providers
+            <a href="/providers" className="text-sm font-medium text-primary hover:text-primary">
+              🔑 API Keys
             </a>
             <a href="/projects" className="text-sm text-muted-foreground hover:text-foreground">
               Projects
