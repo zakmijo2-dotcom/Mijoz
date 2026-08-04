@@ -5,6 +5,7 @@ import structlog
 from contextlib import asynccontextmanager
 
 from app.core.config import get_settings
+from app.db.database import init_db
 from app.services.proxy import proxy_service
 from app.routers import auth, providers, projects, sessions, proxy as proxy_router, routers as routers_router
 
@@ -17,7 +18,12 @@ async def lifespan(app: FastAPI):
     """Application lifespan manager for startup/shutdown events."""
     # Startup
     logger.info("app_startup", message="Starting Mijoz - AI Engineering Operating System")
+    
+    # Initialize database tables
+    init_db()
+    
     yield
+    
     # Shutdown
     await proxy_service.close()
     logger.info("app_shutdown", message="Shutting down Mijoz - AI Engineering Operating System")
@@ -33,10 +39,12 @@ def create_app() -> FastAPI:
         lifespan=lifespan,
     )
     
-    # CORS middleware
+    # CORS middleware - production-safe configuration
+    cors_origins = settings.CORS_ORIGINS.split(",") if settings.CORS_ORIGINS else []
+    
     app.add_middleware(
         CORSMiddleware,
-        allow_origins=["*"],  # Configure appropriately for production
+        allow_origins=cors_origins,
         allow_credentials=True,
         allow_methods=["*"],
         allow_headers=["*"],

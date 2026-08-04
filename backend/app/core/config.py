@@ -38,6 +38,9 @@ class Settings(BaseSettings):
     MAX_RETRY_ATTEMPTS: int = 3
     RETRY_BACKOFF_SECONDS: int = 2
     
+    # CORS - production override required
+    CORS_ORIGINS: str = "http://localhost:3000,http://localhost:8080"
+    
     class Config:
         env_file = ".env"
         case_sensitive = True
