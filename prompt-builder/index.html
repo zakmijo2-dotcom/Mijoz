@@ -1,0 +1,1139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Prompt Builder - Craft Perfect AI Prompts</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    :root {
+      --bg-primary: #0a0a0f;
+      --bg-secondary: #12121a;
+      --bg-glass: rgba(255, 255, 255, 0.05);
+      --bg-glass-hover: rgba(255, 255, 255, 0.08);
+      --border-glass: rgba(255, 255, 255, 0.1);
+      --text-primary: #ffffff;
+      --text-secondary: #a0a0b0;
+      --text-muted: #606070;
+      --accent-violet: #8b5cf6;
+      --accent-cyan: #06b6d4;
+      --accent-blue: #3b82f6;
+      --accent-gradient: linear-gradient(135deg, #8b5cf6, #06b6d4, #3b82f6);
+      --shadow-glow: 0 0 40px rgba(139, 92, 246, 0.15);
+      --shadow-card: 0 8px 32px rgba(0, 0, 0, 0.3);
+      --radius-lg: 24px;
+      --radius-md: 16px;
+      --radius-sm: 12px;
+      --transition-fast: 0.2s ease;
+      --transition-medium: 0.3s ease;
+      --transition-slow: 0.5s ease;
+    }
+
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      background: var(--bg-primary);
+      color: var(--text-primary);
+      min-height: 100vh;
+      overflow-x: hidden;
+      position: relative;
+    }
+
+    /* Animated Background */
+    .background-container {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: -1;
+      overflow: hidden;
+    }
+
+    .gradient-orb {
+      position: absolute;
+      border-radius: 50%;
+      filter: blur(80px);
+      opacity: 0.5;
+      animation: float 20s ease-in-out infinite;
+    }
+
+    .gradient-orb:nth-child(1) {
+      width: 600px;
+      height: 600px;
+      background: radial-gradient(circle, var(--accent-violet), transparent 70%);
+      top: -200px;
+      left: -200px;
+      animation-delay: 0s;
+    }
+
+    .gradient-orb:nth-child(2) {
+      width: 500px;
+      height: 500px;
+      background: radial-gradient(circle, var(--accent-cyan), transparent 70%);
+      bottom: -150px;
+      right: -150px;
+      animation-delay: -7s;
+    }
+
+    .gradient-orb:nth-child(3) {
+      width: 400px;
+      height: 400px;
+      background: radial-gradient(circle, var(--accent-blue), transparent 70%);
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      animation-delay: -14s;
+    }
+
+    @keyframes float {
+      0%, 100% {
+        transform: translate(0, 0) scale(1);
+      }
+      25% {
+        transform: translate(50px, -50px) scale(1.1);
+      }
+      50% {
+        transform: translate(-30px, 30px) scale(0.95);
+      }
+      75% {
+        transform: translate(40px, 20px) scale(1.05);
+      }
+    }
+
+    /* Particles */
+    .particles-container {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+    }
+
+    .particle {
+      position: absolute;
+      width: 4px;
+      height: 4px;
+      background: var(--accent-cyan);
+      border-radius: 50%;
+      opacity: 0.3;
+      animation: particleFloat 15s linear infinite;
+    }
+
+    @keyframes particleFloat {
+      0% {
+        transform: translateY(100vh) rotate(0deg);
+        opacity: 0;
+      }
+      10% {
+        opacity: 0.3;
+      }
+      90% {
+        opacity: 0.3;
+      }
+      100% {
+        transform: translateY(-100vh) rotate(720deg);
+        opacity: 0;
+      }
+    }
+
+    /* Main Container */
+    .app-container {
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: 2rem;
+      position: relative;
+      z-index: 1;
+    }
+
+    /* Header */
+    header {
+      text-align: center;
+      margin-bottom: 3rem;
+      animation: fadeInDown 0.8s ease;
+    }
+
+    @keyframes fadeInDown {
+      from {
+        opacity: 0;
+        transform: translateY(-30px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    h1 {
+      font-size: clamp(2rem, 5vw, 3.5rem);
+      font-weight: 700;
+      background: var(--accent-gradient);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      margin-bottom: 0.5rem;
+      letter-spacing: -0.02em;
+    }
+
+    .subtitle {
+      color: var(--text-secondary);
+      font-size: 1.1rem;
+      font-weight: 300;
+    }
+
+    /* Main Grid */
+    .main-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 2rem;
+      margin-bottom: 2rem;
+    }
+
+    @media (max-width: 1024px) {
+      .main-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    /* Glass Panel */
+    .glass-panel {
+      background: var(--bg-glass);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border: 1px solid var(--border-glass);
+      border-radius: var(--radius-lg);
+      padding: 2rem;
+      box-shadow: var(--shadow-card);
+      transition: all var(--transition-medium);
+    }
+
+    .glass-panel:hover {
+      background: var(--bg-glass-hover);
+      box-shadow: var(--shadow-glow), var(--shadow-card);
+    }
+
+    /* Wizard Steps */
+    .wizard-container {
+      animation: fadeInUp 0.8s ease 0.2s both;
+    }
+
+    @keyframes fadeInUp {
+      from {
+        opacity: 0;
+        transform: translateY(30px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .step-indicators {
+      display: flex;
+      gap: 0.5rem;
+      margin-bottom: 2rem;
+      flex-wrap: wrap;
+    }
+
+    .step-indicator {
+      flex: 1;
+      min-width: 60px;
+      height: 4px;
+      background: var(--border-glass);
+      border-radius: 2px;
+      position: relative;
+      overflow: hidden;
+      cursor: pointer;
+      transition: all var(--transition-fast);
+    }
+
+    .step-indicator:hover {
+      background: rgba(139, 92, 246, 0.3);
+    }
+
+    .step-indicator.active {
+      background: rgba(139, 92, 246, 0.5);
+    }
+
+    .step-indicator.completed {
+      background: var(--accent-gradient);
+    }
+
+    .step-indicator::after {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: var(--accent-gradient);
+      transform: scaleX(0);
+      transform-origin: left;
+      transition: transform var(--transition-medium);
+    }
+
+    .step-indicator.completed::after {
+      transform: scaleX(1);
+    }
+
+    .step-labels {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 2rem;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+    }
+
+    .step-label {
+      flex: 1;
+      min-width: 80px;
+      text-align: center;
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      transition: color var(--transition-fast);
+    }
+
+    .step-label.active {
+      color: var(--accent-cyan);
+      font-weight: 600;
+    }
+
+    .step-label.completed {
+      color: var(--accent-violet);
+    }
+
+    /* Step Content */
+    .step-content {
+      display: none;
+      animation: stepTransition 0.4s ease;
+    }
+
+    .step-content.active {
+      display: block;
+    }
+
+    @keyframes stepTransition {
+      from {
+        opacity: 0;
+        transform: translateX(20px);
+      }
+      to {
+        opacity: 1;
+        transform: translateX(0);
+      }
+    }
+
+    .step-title {
+      font-size: 1.5rem;
+      font-weight: 600;
+      margin-bottom: 0.5rem;
+      background: var(--accent-gradient);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .step-description {
+      color: var(--text-secondary);
+      margin-bottom: 1.5rem;
+      line-height: 1.6;
+    }
+
+    /* Form Elements */
+    .form-group {
+      margin-bottom: 1.5rem;
+    }
+
+    label {
+      display: block;
+      font-size: 0.9rem;
+      font-weight: 500;
+      color: var(--text-secondary);
+      margin-bottom: 0.5rem;
+    }
+
+    input[type="text"],
+    textarea,
+    select {
+      width: 100%;
+      padding: 1rem;
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid var(--border-glass);
+      border-radius: var(--radius-md);
+      color: var(--text-primary);
+      font-family: inherit;
+      font-size: 1rem;
+      transition: all var(--transition-fast);
+    }
+
+    input[type="text"]:focus,
+    textarea:focus,
+    select:focus {
+      outline: none;
+      border-color: var(--accent-violet);
+      box-shadow: 0 0 20px rgba(139, 92, 246, 0.2);
+      background: rgba(255, 255, 255, 0.05);
+    }
+
+    textarea {
+      min-height: 120px;
+      resize: vertical;
+      font-family: 'JetBrains Mono', monospace;
+    }
+
+    select {
+      cursor: pointer;
+      appearance: none;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='%23a0a0b0' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: right 1rem center;
+      background-size: 1rem;
+      padding-right: 3rem;
+    }
+
+    select option {
+      background: var(--bg-secondary);
+      color: var(--text-primary);
+    }
+
+    /* Option Cards */
+    .option-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+      gap: 1rem;
+      margin-top: 1rem;
+    }
+
+    .option-card {
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid var(--border-glass);
+      border-radius: var(--radius-md);
+      padding: 1rem;
+      cursor: pointer;
+      transition: all var(--transition-fast);
+      text-align: center;
+    }
+
+    .option-card:hover {
+      background: rgba(255, 255, 255, 0.06);
+      border-color: var(--accent-violet);
+      transform: translateY(-2px);
+    }
+
+    .option-card.selected {
+      background: rgba(139, 92, 246, 0.15);
+      border-color: var(--accent-violet);
+      box-shadow: 0 0 20px rgba(139, 92, 246, 0.3);
+    }
+
+    .option-card-icon {
+      font-size: 1.5rem;
+      margin-bottom: 0.5rem;
+    }
+
+    .option-card-label {
+      font-size: 0.85rem;
+      font-weight: 500;
+    }
+
+    /* Navigation Buttons */
+    .nav-buttons {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 2rem;
+      gap: 1rem;
+    }
+
+    .btn {
+      padding: 0.875rem 1.5rem;
+      border: none;
+      border-radius: var(--radius-md);
+      font-family: inherit;
+      font-size: 0.95rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all var(--transition-fast);
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .btn-secondary {
+      background: rgba(255, 255, 255, 0.05);
+      color: var(--text-secondary);
+      border: 1px solid var(--border-glass);
+    }
+
+    .btn-secondary:hover {
+      background: rgba(255, 255, 255, 0.1);
+      color: var(--text-primary);
+    }
+
+    .btn-primary {
+      background: var(--accent-gradient);
+      color: white;
+      box-shadow: 0 4px 15px rgba(139, 92, 246, 0.4);
+    }
+
+    .btn-primary:hover {
+      box-shadow: 0 6px 25px rgba(139, 92, 246, 0.5);
+      transform: translateY(-2px);
+    }
+
+    .btn:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+      transform: none !important;
+    }
+
+    /* Preview Panel */
+    .preview-container {
+      animation: fadeInUp 0.8s ease 0.4s both;
+      position: sticky;
+      top: 2rem;
+    }
+
+    .preview-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1.5rem;
+    }
+
+    .preview-title {
+      font-size: 1.25rem;
+      font-weight: 600;
+    }
+
+    .quality-score {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .score-badge {
+      display: flex;
+      align-items: center;
+      gap: 0.25rem;
+      padding: 0.375rem 0.75rem;
+      background: rgba(139, 92, 246, 0.15);
+      border: 1px solid rgba(139, 92, 246, 0.3);
+      border-radius: 20px;
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: var(--accent-violet);
+    }
+
+    .score-value {
+      font-size: 1rem;
+    }
+
+    .preview-content {
+      background: rgba(0, 0, 0, 0.3);
+      border: 1px solid var(--border-glass);
+      border-radius: var(--radius-md);
+      padding: 1.5rem;
+      min-height: 300px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.9rem;
+      line-height: 1.7;
+      color: var(--text-secondary);
+      white-space: pre-wrap;
+      word-break: break-word;
+      position: relative;
+    }
+
+    .preview-content.has-text {
+      color: var(--text-primary);
+    }
+
+    .preview-placeholder {
+      color: var(--text-muted);
+      font-style: italic;
+    }
+
+    .preview-actions {
+      display: flex;
+      gap: 0.75rem;
+      margin-top: 1rem;
+      flex-wrap: wrap;
+    }
+
+    .btn-small {
+      padding: 0.625rem 1rem;
+      font-size: 0.85rem;
+    }
+
+    /* Template Gallery */
+    .template-section {
+      margin-top: 2rem;
+      animation: fadeInUp 0.8s ease 0.6s both;
+    }
+
+    .section-title {
+      font-size: 1.25rem;
+      font-weight: 600;
+      margin-bottom: 1rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .template-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 1rem;
+    }
+
+    .template-card {
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid var(--border-glass);
+      border-radius: var(--radius-md);
+      padding: 1.25rem;
+      cursor: pointer;
+      transition: all var(--transition-fast);
+    }
+
+    .template-card:hover {
+      background: rgba(255, 255, 255, 0.06);
+      border-color: var(--accent-cyan);
+      transform: translateY(-3px);
+      box-shadow: 0 8px 25px rgba(6, 182, 212, 0.2);
+    }
+
+    .template-category {
+      font-size: 0.7rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--accent-cyan);
+      margin-bottom: 0.5rem;
+    }
+
+    .template-name {
+      font-weight: 600;
+      margin-bottom: 0.25rem;
+    }
+
+    .template-preview {
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+
+    /* Saved Prompts */
+    .saved-section {
+      margin-top: 2rem;
+      animation: fadeInUp 0.8s ease 0.8s both;
+    }
+
+    .saved-list {
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+    }
+
+    .saved-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid var(--border-glass);
+      border-radius: var(--radius-sm);
+      padding: 1rem;
+      transition: all var(--transition-fast);
+      cursor: pointer;
+    }
+
+    .saved-item:hover {
+      background: rgba(255, 255, 255, 0.06);
+      border-color: var(--accent-blue);
+    }
+
+    .saved-item-info {
+      flex: 1;
+    }
+
+    .saved-item-date {
+      font-size: 0.75rem;
+      color: var(--text-muted);
+    }
+
+    .saved-item-preview {
+      font-size: 0.85rem;
+      color: var(--text-secondary);
+      margin-top: 0.25rem;
+      display: -webkit-box;
+      -webkit-line-clamp: 1;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+
+    .saved-item-actions {
+      display: flex;
+      gap: 0.5rem;
+      opacity: 0;
+      transition: opacity var(--transition-fast);
+    }
+
+    .saved-item:hover .saved-item-actions {
+      opacity: 1;
+    }
+
+    .btn-icon {
+      padding: 0.5rem;
+      background: transparent;
+      border: 1px solid var(--border-glass);
+      border-radius: var(--radius-sm);
+      color: var(--text-secondary);
+      cursor: pointer;
+      transition: all var(--transition-fast);
+    }
+
+    .btn-icon:hover {
+      background: rgba(255, 255, 255, 0.1);
+      color: var(--text-primary);
+    }
+
+    .btn-icon.delete:hover {
+      background: rgba(239, 68, 68, 0.2);
+      border-color: #ef4444;
+      color: #ef4444;
+    }
+
+    /* Quality Metrics */
+    .quality-metrics {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1rem;
+      margin-top: 1rem;
+    }
+
+    .metric-item {
+      text-align: center;
+      padding: 1rem;
+      background: rgba(255, 255, 255, 0.03);
+      border-radius: var(--radius-sm);
+    }
+
+    .metric-value {
+      font-size: 1.5rem;
+      font-weight: 700;
+      background: var(--accent-gradient);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .metric-label {
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      margin-top: 0.25rem;
+    }
+
+    /* Toast Notification */
+    .toast {
+      position: fixed;
+      bottom: 2rem;
+      right: 2rem;
+      background: var(--bg-secondary);
+      border: 1px solid var(--accent-violet);
+      border-radius: var(--radius-md);
+      padding: 1rem 1.5rem;
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      box-shadow: var(--shadow-glow);
+      transform: translateY(100px);
+      opacity: 0;
+      transition: all var(--transition-medium);
+      z-index: 1000;
+    }
+
+    .toast.show {
+      transform: translateY(0);
+      opacity: 1;
+    }
+
+    .toast-icon {
+      width: 24px;
+      height: 24px;
+      background: var(--accent-gradient);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.875rem;
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+      .app-container {
+        padding: 1rem;
+      }
+
+      .main-grid {
+        gap: 1rem;
+      }
+
+      .glass-panel {
+        padding: 1.5rem;
+      }
+
+      .step-labels {
+        display: none;
+      }
+
+      .quality-metrics {
+        grid-template-columns: 1fr;
+      }
+
+      .preview-container {
+        position: static;
+      }
+
+      .toast {
+        left: 1rem;
+        right: 1rem;
+        bottom: 1rem;
+      }
+    }
+
+    /* Accessibility */
+    @media (prefers-reduced-motion: reduce) {
+      *,
+      *::before,
+      *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+      }
+    }
+
+    .sr-only {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      padding: 0;
+      margin: -1px;
+      overflow: hidden;
+      clip: rect(0, 0, 0, 0);
+      white-space: nowrap;
+      border: 0;
+    }
+
+    /* Focus Visible */
+    :focus-visible {
+      outline: 2px solid var(--accent-cyan);
+      outline-offset: 2px;
+    }
+
+    button:focus-visible,
+    input:focus-visible,
+    textarea:focus-visible,
+    select:focus-visible,
+    [tabindex]:focus-visible {
+      outline: 2px solid var(--accent-cyan);
+      outline-offset: 2px;
+    }
+  </style>
+</head>
+<body>
+  <!-- Background -->
+  <div class="background-container">
+    <div class="gradient-orb"></div>
+    <div class="gradient-orb"></div>
+    <div class="gradient-orb"></div>
+    <div class="particles-container" id="particles"></div>
+  </div>
+
+  <!-- App Container -->
+  <div class="app-container">
+    <header>
+      <h1>✨ Prompt Builder</h1>
+      <p class="subtitle">Craft perfect AI prompts with our guided wizard</p>
+    </header>
+
+    <div class="main-grid">
+      <!-- Wizard Panel -->
+      <div class="glass-panel wizard-container">
+        <!-- Step Indicators -->
+        <div class="step-indicators" role="tablist" aria-label="Progress steps">
+          <div class="step-indicator active" data-step="0" role="tab" tabindex="0" aria-selected="true"></div>
+          <div class="step-indicator" data-step="1" role="tab" tabindex="-1" aria-selected="false"></div>
+          <div class="step-indicator" data-step="2" role="tab" tabindex="-1" aria-selected="false"></div>
+          <div class="step-indicator" data-step="3" role="tab" tabindex="-1" aria-selected="false"></div>
+          <div class="step-indicator" data-step="4" role="tab" tabindex="-1" aria-selected="false"></div>
+          <div class="step-indicator" data-step="5" role="tab" tabindex="-1" aria-selected="false"></div>
+        </div>
+
+        <div class="step-labels">
+          <span class="step-label active">Goal</span>
+          <span class="step-label">Role</span>
+          <span class="step-label">Context</span>
+          <span class="step-label">Format</span>
+          <span class="step-label">Constraints</span>
+          <span class="step-label">Tone</span>
+        </div>
+
+        <!-- Step 1: Goal -->
+        <div class="step-content active" data-step="0" role="tabpanel">
+          <h2 class="step-title">What's your goal?</h2>
+          <p class="step-description">Define what you want the AI to help you achieve. Be specific about your desired outcome.</p>
+          
+          <div class="form-group">
+            <label for="goal">Primary Objective</label>
+            <textarea id="goal" placeholder="e.g., I need help creating a comprehensive marketing strategy for my new SaaS product targeting small businesses..." aria-describedby="goal-help"></textarea>
+            <p id="goal-help" class="sr-only">Describe your main objective in detail</p>
+          </div>
+        </div>
+
+        <!-- Step 2: Role/Persona -->
+        <div class="step-content" data-step="1" role="tabpanel">
+          <h2 class="step-title">Choose a persona</h2>
+          <p class="step-description">Select the expertise or role the AI should adopt when responding to your prompt.</p>
+          
+          <div class="form-group">
+            <label for="role-select">Expertise Area</label>
+            <select id="role-select" aria-label="Select expertise area">
+              <option value="">Custom (specify below)</option>
+              <option value="software-engineer">Software Engineer</option>
+              <option value="marketing-expert">Marketing Expert</option>
+              <option value="content-writer">Content Writer</option>
+              <option value="data-scientist">Data Scientist</option>
+              <option value="business-consultant">Business Consultant</option>
+              <option value="creative-designer">Creative Designer</option>
+              <option value="research-analyst">Research Analyst</option>
+              <option value="educator">Educator/Teacher</option>
+              <option value="legal-advisor">Legal Advisor</option>
+              <option value="health-coach">Health & Wellness Coach</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label for="role-custom">Custom Role (optional)</label>
+            <input type="text" id="role-custom" placeholder="e.g., Senior UX Designer with 10 years of experience..." aria-describedby="role-help">
+            <p id="role-help" class="sr-only">Specify a custom role if not listed above</p>
+          </div>
+        </div>
+
+        <!-- Step 3: Context -->
+        <div class="step-content" data-step="2" role="tabpanel">
+          <h2 class="step-title">Provide context</h2>
+          <p class="step-description">Add relevant background information that will help the AI understand your situation better.</p>
+          
+          <div class="form-group">
+            <label for="context">Background Information</label>
+            <textarea id="context" placeholder="e.g., My company is a B2B SaaS startup with 50 employees. We're launching a project management tool specifically designed for remote teams. Our main competitors are Asana and Monday.com..." aria-describedby="context-help"></textarea>
+            <p id="context-help" class="sr-only">Provide detailed background context</p>
+          </div>
+        </div>
+
+        <!-- Step 4: Format -->
+        <div class="step-content" data-step="3" role="tabpanel">
+          <h2 class="step-title">Output format</h2>
+          <p class="step-description">How would you like the AI to structure its response?</p>
+          
+          <div class="option-grid" role="group" aria-label="Output format options">
+            <div class="option-card" data-format="paragraph" role="radio" tabindex="0" aria-checked="false">
+              <div class="option-card-icon">📝</div>
+              <div class="option-card-label">Paragraph</div>
+            </div>
+            <div class="option-card" data-format="bullet-points" role="radio" tabindex="0" aria-checked="false">
+              <div class="option-card-icon">📋</div>
+              <div class="option-card-label">Bullet Points</div>
+            </div>
+            <div class="option-card" data-format="numbered-list" role="radio" tabindex="0" aria-checked="false">
+              <div class="option-card-icon">🔢</div>
+              <div class="option-card-label">Numbered List</div>
+            </div>
+            <div class="option-card" data-format="table" role="radio" tabindex="0" aria-checked="false">
+              <div class="option-card-icon">📊</div>
+              <div class="option-card-label">Table</div>
+            </div>
+            <div class="option-card" data-format="code" role="radio" tabindex="0" aria-checked="false">
+              <div class="option-card-icon">💻</div>
+              <div class="option-card-label">Code</div>
+            </div>
+            <div class="option-card" data-format="step-by-step" role="radio" tabindex="0" aria-checked="false">
+              <div class="option-card-icon">🎯</div>
+              <div class="option-card-label">Step by Step</div>
+            </div>
+            <div class="option-card" data-format="json" role="radio" tabindex="0" aria-checked="false">
+              <div class="option-card-icon">📄</div>
+              <div class="option-card-label">JSON</div>
+            </div>
+            <div class="option-card" data-format="markdown" role="radio" tabindex="0" aria-checked="false">
+              <div class="option-card-icon">📖</div>
+              <div class="option-card-label">Markdown</div>
+            </div>
+          </div>
+
+          <div class="form-group" style="margin-top: 1.5rem;">
+            <label for="format-custom">Additional Format Instructions</label>
+            <input type="text" id="format-custom" placeholder="e.g., Include examples for each point, use headings..." aria-describedby="format-help">
+            <p id="format-help" class="sr-only">Add any additional formatting requirements</p>
+          </div>
+        </div>
+
+        <!-- Step 5: Constraints -->
+        <div class="step-content" data-step="4" role="tabpanel">
+          <h2 class="step-title">Set constraints</h2>
+          <p class="step-description">Define any limitations or specific requirements for the response.</p>
+          
+          <div class="form-group">
+            <label for="constraints">Specific Requirements</label>
+            <textarea id="constraints" placeholder="e.g., Keep the response under 500 words. Avoid technical jargon. Focus on practical, actionable advice. Include real-world examples..." aria-describedby="constraints-help"></textarea>
+            <p id="constraints-help" class="sr-only">List any constraints or requirements</p>
+          </div>
+
+          <div class="form-group">
+            <label for="length">Response Length</label>
+            <select id="length" aria-label="Select response length">
+              <option value="">No preference</option>
+              <option value="brief">Brief (1-2 paragraphs)</option>
+              <option value="medium">Medium (3-5 paragraphs)</option>
+              <option value="detailed">Detailed (comprehensive)</option>
+              <option value="extended">Extended (in-depth analysis)</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- Step 6: Tone -->
+        <div class="step-content" data-step="5" role="tabpanel">
+          <h2 class="step-title">Choose tone</h2>
+          <p class="step-description">Select the writing style and tone for the AI's response.</p>
+          
+          <div class="option-grid" role="group" aria-label="Tone options">
+            <div class="option-card" data-tone="professional" role="radio" tabindex="0" aria-checked="false">
+              <div class="option-card-icon">💼</div>
+              <div class="option-card-label">Professional</div>
+            </div>
+            <div class="option-card" data-tone="casual" role="radio" tabindex="0" aria-checked="false">
+              <div class="option-card-icon">😊</div>
+              <div class="option-card-label">Casual</div>
+            </div>
+            <div class="option-card" data-tone="friendly" role="radio" tabindex="0" aria-checked="false">
+              <div class="option-card-icon">🤗</div>
+              <div class="option-card-label">Friendly</div>
+            </div>
+            <div class="option-card" data-tone="authoritative" role="radio" tabindex="0" aria-checked="false">
+              <div class="option-card-icon">🎓</div>
+              <div class="option-card-label">Authoritative</div>
+            </div>
+            <div class="option-card" data-tone="encouraging" role="radio" tabindex="0" aria-checked="false">
+              <div class="option-card-icon">💪</div>
+              <div class="option-card-label">Encouraging</div>
+            </div>
+            <div class="option-card" data-tone="humorous" role="radio" tabindex="0" aria-checked="false">
+              <div class="option-card-icon">😄</div>
+              <div class="option-card-label">Humorous</div>
+            </div>
+            <div class="option-card" data-tone="technical" role="radio" tabindex="0" aria-checked="false">
+              <div class="option-card-icon">⚙️</div>
+              <div class="option-card-label">Technical</div>
+            </div>
+            <div class="option-card" data-tone="creative" role="radio" tabindex="0" aria-checked="false">
+              <div class="option-card-icon">🎨</div>
+              <div class="option-card-label">Creative</div>
+            </div>
+          </div>
+
+          <div class="form-group" style="margin-top: 1.5rem;">
+            <label for="tone-custom">Custom Tone Notes</label>
+            <input type="text" id="tone-custom" placeholder="e.g., Use simple language suitable for beginners..." aria-describedby="tone-help">
+            <p id="tone-help" class="sr-only">Add any additional tone specifications</p>
+          </div>
+        </div>
+
+        <!-- Navigation -->
+        <div class="nav-buttons">
+          <button class="btn btn-secondary" id="prev-btn" disabled>
+            ← Previous
+          </button>
+          <button class="btn btn-primary" id="next-btn">
+            Next →
+          </button>
+        </div>
+      </div>
+
+      <!-- Preview Panel -->
+      <div class="glass-panel preview-container">
+        <div class="preview-header">
+          <h2 class="preview-title">Live Preview</h2>
+          <div class="quality-score">
+            <span class="score-badge">
+              Quality: <span class="score-value" id="quality-score">0</span>/100
+            </span>
+          </div>
+        </div>
+
+        <div class="preview-content" id="preview-content">
+          <span class="preview-placeholder">Your generated prompt will appear here as you fill out the wizard...</span>
+        </div>
+
+        <div class="preview-actions">
+          <button class="btn btn-secondary btn-small" id="copy-btn">
+            📋 Copy
+          </button>
+          <button class="btn btn-secondary btn-small" id="export-txt-btn">
+            📄 Export .txt
+          </button>
+          <button class="btn btn-secondary btn-small" id="export-md-btn">
+            📝 Export .md
+          </button>
+          <button class="btn btn-primary btn-small" id="save-btn">
+            💾 Save
+          </button>
+        </div>
+
+        <div class="quality-metrics">
+          <div class="metric-item">
+            <div class="metric-value" id="clarity-score">-</div>
+            <div class="metric-label">Clarity</div>
+          </div>
+          <div class="metric-item">
+            <div class="metric-value" id="specificity-score">-</div>
+            <div class="metric-label">Specificity</div>
+          </div>
+          <div class="metric-item">
+            <div class="metric-value" id="structure-score">-</div>
+            <div class="metric-label">Structure</div>
+          </div>
+        </div>
+
+        <!-- Templates -->
+        <div class="template-section">
+          <h3 class="section-title">📚 Quick Templates</h3>
+          <div class="template-grid" id="template-grid">
+            <!-- Templates will be populated by JS -->
+          </div>
+        </div>
+
+        <!-- Saved Prompts -->
+        <div class="saved-section">
+          <h3 class="section-title">💾 Saved Prompts</h3>
+          <div class="saved-list" id="saved-list">
+            <!-- Saved items will be populated by JS -->
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast -->
+  <div class="toast" id="toast" role="alert" aria-live="polite">
+    <div class="toast-icon">✓</div>
+    <span class="toast-message">Action completed successfully</span>
+  </div>
+
+  <script type="module" src="/src/main.js"></script>
+</body>
+</html>

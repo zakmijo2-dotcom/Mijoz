@@ -1,38 +1,17 @@
 ```
-# Python
-__pycache__/
-*.py[cod]
-*$py.class
-*.so
-.Python
-build/
-develop-eggs/
+# Dependencies
+node_modules/
+
+# Build artifacts
 dist/
-downloads/
-eggs/
-.eggs/
-lib/
-lib64/
-parts/
-sdist/
-var/
-wheels/
-*.egg-info/
-.installed.cfg
-*.egg
+build/
+target/
 
-# Virtual environments
-venv/
-ENV/
-env.bak/
-.venv/
+# Vite specific
+.vite/
 
-# IDE and editor files
-.vscode/
-.idea/
-*.swp
-*.swo
-*.tmp
+# Package lock files
+package-lock.json
 
 # Logs
 *.log
@@ -40,19 +19,11 @@ env.bak/
 # Environment variables
 .env
 .env.local
-*.env.*
+.env.*
 
-# Coverage reports
-.coverage
-htmlcov/
-.coverage.*
-
-# Testing
-.pytest_cache/
-.mypy_cache/
-
-# Docker
-.dockerenv
+# IDE files
+.vscode/
+.idea/
 
 # OS generated files
 .DS_Store
